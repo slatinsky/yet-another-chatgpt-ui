@@ -2,4 +2,8 @@
 	import '../app.postcss';
 </script>
 
-<slot />
+
+
+<div class="h-full">
+	<slot />
+</div>
