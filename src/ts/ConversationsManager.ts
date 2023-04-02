@@ -26,7 +26,10 @@ class ConversationsManager {
                 });
             }
 
-            this.selectConversationById(this.maxId);
+            // preselect last conversation
+            if (conversationIds.length > 0) {
+                this.selectConversationById(conversationIds[conversationIds.length - 1]);
+            }
         });
     }
 
