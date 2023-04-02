@@ -2,7 +2,6 @@ import type { Writable } from "svelte/store";
 
 export interface ConversationJson {
     id: number;
-    order: number;
     name: string;
     systemMessage: string;
     messages: any[];
