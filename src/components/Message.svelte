@@ -4,10 +4,11 @@
     const selectedConversation = conversationsManager.selectedConversation
     const memoryId = $selectedConversation?.memoryId;
 
-    console.log("$selectedConversation", $selectedConversation);
+    // console.log("$selectedConversation", $selectedConversation);
 
     export let message: Message;
     $: memoryMarkerShown = ($memoryId === message.id) as boolean;
+    const role = message.role;
 
     function clearMemory() {
         $memoryId = 1;
@@ -23,10 +24,12 @@
         }
         $selectedConversation.deleteMessage(message.id);
     }
+
+    console.log("message.role", message.role);
 </script>
 
 
-<div class={(message.role === "assistant" ? "bg-gray-700" : "") + " relative"}>
+<div class={(message.role === "assistant" ? "bg-gray-700" : "") + " " + (message.role === "warning" ? "bg-orange-700" : "") + " relative"}>
     {#if memoryMarkerShown}
         <div class="absolute top-0 w-full flex flex-col items-center border-b-2 border-red-600 text-sm text-red-500 -translate-y-full">
             <h3>Memory</h3>
@@ -44,7 +47,7 @@
     </div>
 
     <div class="px-4 pt-2 pb-8 text-gray-200">
-        {message.text}
+        {message.content}
     </div>
 </div>
 

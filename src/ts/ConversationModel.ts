@@ -6,21 +6,21 @@ export class ConversationModel {
     id: number;
     order: Writable<number>;
     name: Writable<string>;
-    role: Writable<string>;
+    systemMessage: Writable<string>;
     messages: Writable<Message[]>;
     memoryId: Writable<number>;
 
     private _unsubscribeName: any;
     private _unsubscribeMessages: any;
     private _unsubscribeOrder: any;
-    private _unsubscribeRole: any;
+    private _unsubscribeSystemMessage: any;
 
     constructor(id: number) {
         this.id = id;
 
         // initialize stores and load defaults
         this.name = writable<string>("untitled topic " + String(id));
-        this.role = writable<string>("");
+        this.systemMessage = writable<string>("");
         this.messages = writable<Message[]>([]);
         this.order = writable<number>(id);
         this.memoryId = writable<number>(1);
@@ -32,7 +32,7 @@ export class ConversationModel {
             if (conversation !== undefined) {
                 this.order.set(conversation.order);
                 this.name.set(conversation.name);
-                this.role.set(conversation.role);
+                this.systemMessage.set(conversation.systemMessage);
                 this.messages.set(conversation.messages);
                 this.memoryId.set(conversation.memoryId);
             }
@@ -47,7 +47,7 @@ export class ConversationModel {
             this._unsubscribeOrder = this.order.subscribe(async (order: number) => {
                 await this.save();
             })
-            this._unsubscribeRole = this.role.subscribe(async (role: string) => {
+            this._unsubscribeSystemMessage = this.systemMessage.subscribe(async (role: string) => {
                 await this.save();
             })
         });
@@ -68,7 +68,7 @@ export class ConversationModel {
             id: this.id,
             order: get(this.order),
             name: get(this.name),
-            role: get(this.role),
+            systemMessage: get(this.systemMessage),
             messages: get(this.messages),
             memoryId: get(this.memoryId),
             version: 1,
@@ -77,7 +77,7 @@ export class ConversationModel {
         await saveConversations(conversations);
     }
 
-    addMessage(text: string, role: "user" | "assistant" | "warning") {
+    addMessage(content: string, role: "user" | "assistant" | "warning", totalTokens: number): Message {
         let timestamp = new Date().toISOString();
         let id = get(this.messages).reduce((maxId: number, message: Message) => {
             return Math.max(maxId, message.id);
@@ -85,10 +85,12 @@ export class ConversationModel {
         let message: Message = {
             id: id + 1,
             role: role,
-            text: text,
+            content: content,
             timestamp: timestamp,
+            totalTokens: totalTokens,
         };
         this.messages.update((messages: Message[]) => [...messages, message]);
+        return message;
     }
 
     deleteMessage(id: number) {
@@ -101,6 +103,6 @@ export class ConversationModel {
         this._unsubscribeName();
         this._unsubscribeMessages();
         this._unsubscribeOrder();
-        this._unsubscribeRole();
+        this._unsubscribeSystemMessage();
     }
 }

@@ -6,7 +6,7 @@
 
     const name = conversation.name;    // store
     $: id = conversation.id;           // not a store
-    const role = conversation.role;    // store
+    const systemMessage = conversation.systemMessage;    // store
 
     $: selectedConversation = conversationsManager.selectedConversation;
 
@@ -36,6 +36,6 @@
     </div>
 
     {#if $selectedConversation && $selectedConversation.id === id}
-        <textarea class="w-full bg-slate-700 px-2" name="" id="" rows="3" bind:value={$role} placeholder="Chat topic. Example: 'Ubuntu 22.04 CLI.'" />
+        <textarea class="w-full bg-slate-700 px-2" name="" id="" rows="3" bind:value={$systemMessage} placeholder="Chat topic. Example: 'Ubuntu 22.04 CLI.'" />
     {/if}
 </div>
