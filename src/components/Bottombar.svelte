@@ -131,6 +131,6 @@
     <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send [enter]</button>
     <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history [ctrl+enter]</button>
     <button on:click={scrollDown} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Scroll down</button>
-    <!-- <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button>
-    <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button> -->
+    <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button>
+    <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button>
 </div>

@@ -24,12 +24,22 @@
     function selectCoversation() {
         conversationsManager.selectConversationById(id);
     }
+
+    function up() {
+        conversationsManager.moveConversationUp(id);
+    }
+
+    function down() {
+        conversationsManager.moveConversationDown(id);
+    }
 </script>
 
 <div>
     <div class="bg-slate-800 px-4 py-2 mt-2 hover:bg-slate-700 flex justify-between" on:click={selectCoversation}>
         <div>{$name}</div>
         <div>
+            <button on:click|stopPropagation={up} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">up</button>
+            <button on:click|stopPropagation={down} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">down</button>
             <button on:click|stopPropagation={renameConversation} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">rename</button>
             <button on:click|stopPropagation={deleteConversation} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">delete</button>
         </div>

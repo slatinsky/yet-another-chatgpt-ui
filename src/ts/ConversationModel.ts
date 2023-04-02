@@ -1,6 +1,7 @@
 import { get, writable, type Writable } from "svelte/store";
 import type { ConversationJson, Message } from "./types";
 import { getConversations, saveConversations } from "./helpers";
+import localforage from "localforage";
 
 export class ConversationModel {
     id: number;
@@ -25,16 +26,24 @@ export class ConversationModel {
         this.order = writable<number>(id);
         this.memoryId = writable<number>(1);
 
-        getConversations().then((conversations: ConversationJson[]) => {
-            let conversation = conversations.find((conversation: ConversationJson) => {
-                return conversation.id === this.id;
-            });
-            if (conversation !== undefined) {
+        getConversations().then(async(conversations: ConversationJson[]) => {
+            let conversation = await localforage.getItem("gptui-conversation-" + String(id)) as ConversationJson | null;
+            if (conversation) {
+                console.log("loaded conversation", conversation);
                 this.order.set(conversation.order);
                 this.name.set(conversation.name);
                 this.systemMessage.set(conversation.systemMessage);
                 this.messages.set(conversation.messages);
                 this.memoryId.set(conversation.memoryId);
+            }
+            else {
+                // it is a new conversation - add to a list of conversations
+                let conversationsIds = await localforage.getItem("gptui-conversations-ids") as number[] | null;
+                if (conversationsIds === null) {
+                    conversationsIds = [];
+                }
+                conversationsIds.push(id);
+                await localforage.setItem("gptui-conversations-ids", conversationsIds);    // POSSIBLE RACE CONDITION if multiple conversations are created at the same time
             }
 
             // autosave
@@ -54,17 +63,8 @@ export class ConversationModel {
     }
 
     async save() {
-        // console.log("saving", this.id);
-
-        let conversations = await getConversations();
-
-        // remove old conversation
-        conversations = conversations.filter((conversation: ConversationJson) => {
-            return conversation.id !== this.id;
-        });
-
         // add new conversation
-        conversations.push({
+        const conversationJson = {
             id: this.id,
             order: get(this.order),
             name: get(this.name),
@@ -72,9 +72,10 @@ export class ConversationModel {
             messages: get(this.messages),
             memoryId: get(this.memoryId),
             version: 1,
-        });
+        };
 
-        await saveConversations(conversations);
+        console.log("saving", conversationJson);
+        await localforage.setItem("gptui-conversation-" + this.id, conversationJson);
     }
 
     addMessage(content: string, role: "user" | "assistant" | "warning", totalTokens: number): Message {
