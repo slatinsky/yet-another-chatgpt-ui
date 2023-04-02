@@ -95,7 +95,11 @@
         if (event.key === "Enter") {
             if (event.shiftKey) {
                 return;
-            } else {
+            }
+            if (event.ctrlKey) {
+                sendWithoutHistory();
+            }
+            else {
                 event.preventDefault();
                 send();
             }
@@ -106,9 +110,8 @@
 
 <div class="w-full flex text-white">
     <textarea on:keydown={keydown} class="w-full bg-gray-500 px-2" name="" id="" rows="3" placeholder="Type your message here. To insert new line, press shift+enter." bind:value={message} />
-    <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send</button>
-    <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history</button>
-    <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button>
-    <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button>
-    <!-- <button on:click={devai} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">AI</button> -->
+    <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send [enter]</button>
+    <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history [ctrl+enter]</button>
+    <!-- <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button>
+    <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button> -->
 </div>
