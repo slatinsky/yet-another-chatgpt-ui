@@ -64,7 +64,7 @@
     </div>
 
     {#if showRaw}
-        <pre class="px-4 pt-2 pb-8 text-gray-200">{message.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
+        <pre class="px-4 pt-2 pb-8 text-gray-200 whitespace-pre-wrap">{message.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
     {:else}
         <div class="px-4 pt-2 pb-8 text-gray-200 message-content">
             {@html md.render(message.content)}
@@ -79,6 +79,7 @@
         border-radius: 0.25rem;
         padding: 1rem;
         margin: 1rem 0;
+        white-space: pre-wrap;
     }
 </style>
 

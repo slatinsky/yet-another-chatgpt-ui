@@ -9,7 +9,7 @@
     $: console.log("messages", messages);
 </script>
 
-<div class="bg-gray-800 flex-1 overflow-y-auto overflow-x-hidden">
+<div class="bg-gray-800 flex-1 overflow-y-auto overflow-x-hidden" id="messages-container">
     {#if !$messages || $messages.length === 0}
         <div class="text-white text-center text-2xl mt-4">No messages</div>
     {:else}

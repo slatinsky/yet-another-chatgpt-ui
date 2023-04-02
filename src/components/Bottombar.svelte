@@ -27,6 +27,11 @@
         if (message) {
             const newMessage = $selectedConversation.addMessage(message, "user", 0);
             message = "";
+
+            setTimeout(() => {
+                scrollDown()
+            }, 0);
+
             return newMessage;
         }
 
@@ -70,8 +75,11 @@
             console.warn("No message to send");
             return;
         }
-        setTimeout(() => {   // wait for store to update
-            aiComplete()
+        setTimeout(async() => {   // wait for store to update
+            await aiComplete()
+            setTimeout(() => {
+                scrollDown()
+            }, 0);
         }, 0);
 
     }
@@ -86,8 +94,11 @@
 
         $memoryId = newMessage.id  // reset memory
 
-        setTimeout(() => {   // wait for store to update
-            aiComplete()
+        setTimeout(async() => {   // wait for store to update
+            await aiComplete()
+            setTimeout(() => {
+                scrollDown()
+            }, 0);
         }, 0);
     }
 
@@ -105,6 +116,13 @@
             }
         }
     }
+
+    function scrollDown() {
+        const messages = document.querySelector("#messages-container");
+        if (messages) {
+            messages.scrollTop = messages.scrollHeight;
+        }
+    }
 </script>
 
 
@@ -112,6 +130,7 @@
     <textarea on:keydown={keydown} class="w-full bg-gray-500 px-2" name="" id="" rows="3" placeholder="Type your message here. To insert new line, press shift+enter." bind:value={message} />
     <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send [enter]</button>
     <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history [ctrl+enter]</button>
+    <button on:click={scrollDown} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Scroll down</button>
     <!-- <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button>
     <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button> -->
 </div>
