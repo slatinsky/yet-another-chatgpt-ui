@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { apiToken, apiModel } from "$ts/stores";
+	import { apiToken, apiModel } from "$ts/stores/settingsStores";
 	import Input from "./forms/Input.svelte";
 </script>
 

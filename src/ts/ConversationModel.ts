@@ -1,7 +1,6 @@
 import { get, writable, type Writable } from "svelte/store";
 import type { ConversationJson, Message } from "./types";
-import { getConversations } from "./helpers";
-import localforage from "localforage";
+import { getConversationById, getConversationIds, saveConversation, saveConversationIds } from "./stores/conversationsStores";
 
 export class ConversationModel {
     id: number;
@@ -23,8 +22,7 @@ export class ConversationModel {
         this.messages = writable<Message[]>([]);
         this.memoryId = writable<number>(1);
 
-        getConversations().then(async(conversations: ConversationJson[]) => {
-            let conversation = await localforage.getItem("gptui-conversation-" + String(id)) as ConversationJson | null;
+        getConversationById(id).then(async(conversation: ConversationJson | null) => {
             if (conversation) {
                 console.log("loaded conversation", conversation);
                 this.name.set(conversation.name);
@@ -34,12 +32,9 @@ export class ConversationModel {
             }
             else {
                 // it is a new conversation - add to a list of conversations
-                let conversationsIds = await localforage.getItem("gptui-conversations-ids") as number[] | null;
-                if (conversationsIds === null) {
-                    conversationsIds = [];
-                }
+                let conversationsIds = await getConversationIds();
                 conversationsIds.push(id);
-                await localforage.setItem("gptui-conversations-ids", conversationsIds);    // POSSIBLE RACE CONDITION if multiple conversations are created at the same time
+                await saveConversationIds(conversationsIds);  // POSSIBLE RACE CONDITION if multiple conversations are created at the same time
             }
 
             // autosave
@@ -66,8 +61,7 @@ export class ConversationModel {
             version: 1,
         };
 
-        console.log("saving", conversationJson);
-        await localforage.setItem("gptui-conversation-" + this.id, conversationJson);
+        await saveConversation(conversationJson);
     }
 
     addMessage(content: string, role: "user" | "assistant" | "warning", totalTokens: number): Message {

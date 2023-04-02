@@ -1,5 +1,3 @@
-import type { Writable } from "svelte/store";
-
 export interface ConversationJson {
     id: number;
     name: string;

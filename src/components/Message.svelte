@@ -35,8 +35,6 @@
     function toggleRaw() {
         showRaw = !showRaw;
     }
-
-    console.log("message.role", message.role);
 </script>
 
 

@@ -9,14 +9,10 @@
     let message = "";
 
     const selectedConversation = conversationsManager.selectedConversation as Writable<ConversationModel | null>;  // store
-        $selectedConversation?.role
 
-    const systemMessage = $selectedConversation?.systemMessage;    // store
-    const allMessages = $selectedConversation?.messages;            // store
-    const memoryId = $selectedConversation?.memoryId;              // store
-
-    console.log("memoryId", $memoryId);
-    console.log("allMessages", $allMessages);
+    $: systemMessage = $selectedConversation?.systemMessage;    // store
+    $: allMessages = $selectedConversation?.messages;            // store
+    $: memoryId = $selectedConversation?.memoryId;              // store
 
     $: messagesInMemory = $allMessages?.filter((message: any) => message.id >= ($memoryId ?? 0));
 
@@ -71,7 +67,7 @@
 
 
         console.log("messages to api", messages);
-        const res = await ai.complete(messages);
+        // const res = await ai.complete(messages);
         $selectedConversation.addMessage(res.message.content, res.message.role, res.totalTokens);
     }
 
@@ -123,12 +119,12 @@
         }
     }
 
-    // function scrollDown() {
-    //     const messages = document.querySelector("#messages-container");
-    //     if (messages) {
-    //         messages.scrollTop = messages.scrollHeight;
-    //     }
-    // }
+    function scrollDown() {
+        const messages = document.querySelector("#messages-container");
+        if (messages) {
+            messages.scrollTop = messages.scrollHeight;
+        }
+    }
 </script>
 
 

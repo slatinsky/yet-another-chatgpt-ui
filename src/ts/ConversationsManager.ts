@@ -1,8 +1,6 @@
 import { get, writable, type Writable } from "svelte/store";
 import { ConversationModel } from "./ConversationModel";
-import { getConversationIds, getConversations, saveConversations } from "./helpers";
-import type { ConversationJson } from "./types";
-import localforage from "localforage";
+import { deleteConversationById, getConversationIds, saveConversationIds } from "./stores/conversationsStores";
 
 class ConversationsManager {
     conversations: Writable<ConversationModel[]>;
@@ -51,6 +49,7 @@ class ConversationsManager {
             console.warn("Conversation ID not found:", id);
             return;
         }
+        console.log("selecting", conversation.id, get(conversation.name));
         this.selectedConversation.set(conversation);
     }
 
@@ -87,14 +86,11 @@ class ConversationsManager {
         });
 
         // delete from database
-        await localforage.removeItem("gptui-conversation-" + id);
+        await deleteConversationById(id);
 
-        let conversationsIds = await localforage.getItem("gptui-conversations-ids") as number[] | null;
-        if (conversationsIds === null) {
-            conversationsIds = [];
-        }
+        let conversationsIds = await getConversationIds()
         conversationsIds = conversationsIds.filter((conversationId: number) => conversationId !== id);
-        await localforage.setItem("gptui-conversations-ids", conversationsIds);  // POSSIBLE RACE CONDITION if multiple conversations are deleted at the same time
+        await saveConversationIds(conversationsIds)   // POSSIBLE RACE CONDITION if multiple conversations are deleted at the same time
     }
 
     async moveConversationDown(id: number) {
@@ -116,7 +112,7 @@ class ConversationsManager {
         console.log("new order", conversationsIds);
 
         // save to database
-        await localforage.setItem("gptui-conversations-ids", conversationsIds);
+        await saveConversationIds(conversationsIds);
 
         await this.sortConversationsByOrder()
     }
@@ -140,7 +136,7 @@ class ConversationsManager {
         console.log("new order", conversationsIds);
 
         // save to database
-        await localforage.setItem("gptui-conversations-ids", conversationsIds);
+        await saveConversationIds(conversationsIds);
 
         await this.sortConversationsByOrder()
     }

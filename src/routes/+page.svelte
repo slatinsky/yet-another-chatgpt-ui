@@ -3,7 +3,7 @@
     import Messages from "$components/Messages.svelte";
     import Sidebar from "$components/Sidebar.svelte";
 	import { conversationsManager } from "$ts/ConversationsManager";
-	import { apiToken } from "$ts/stores";
+	import { apiToken } from "$ts/stores/settingsStores";
 
     let conversations = conversationsManager.conversations;
 

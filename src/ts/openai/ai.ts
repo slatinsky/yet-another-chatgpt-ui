@@ -1,6 +1,5 @@
-import { apiModel, apiToken } from "$ts/stores";
-import type { AIcomplete, AImessage, Message } from "$ts/types";
-import { json } from "@sveltejs/kit";
+import { apiModel, apiToken } from "$ts/stores/settingsStores";
+import type { AIcomplete, AImessage } from "$ts/types";
 import { Configuration, OpenAIApi } from "openai";
 import { get } from "svelte/store";
 
@@ -25,7 +24,13 @@ class AI {
     async complete(messages: AImessage[]): Promise<AIcomplete> {
         const token = get(apiToken);
         if (token === null) {
-            return;
+            return {
+                message: {
+                    role: 'warning',
+                    content: "Token is not set. Please set it in Settings.",
+                },
+                totalTokens: 0
+            }
         }
 
         try {
