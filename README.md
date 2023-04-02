@@ -1,38 +1,41 @@
-# create-svelte
+# Yet another ChatGPT UI
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+See deployed version. Better documentation coming soon...
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
+## Development
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+git clone https://github.com/slatinsky/yet-another-chatgpt-ui
+cd yet-another-chatgpt-ui
+npm install --legacy-peer-deps
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open `http://localhost:3000` in your browser.
 
-To create a production version of your app:
 
+## Production
 ```bash
-npm run build
+git clone git@github.com:slatinsky/yet-another-chatgpt-ui.git
+cd yet-another-chatgpt-ui
+docker build -t chat .
+docker run -d --rm --name chat -p 127.0.0.1:8156:8156 chat
 ```
 
-You can preview the production build with `npm run preview`.
+verify installation
+```bash
+curl http://127.0.0.1:8156
+```
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## License
+GNU GENERAL PUBLIC LICENSE. See [LICENSE](LICENSE) for more details.
+
+## Contributing
+Feel free to open issues and pull requests.
+### Short guide, how to contribute
+- Fork the repository
+- Create a new branch
+- Implement your changes
+- Commit and push the changes
+- Create a pull request
+
+If you find this project useful, please consider starring it here on GitHub :)
