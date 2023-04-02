@@ -40,7 +40,7 @@
 </script>
 
 
-<div class={(message.role === "assistant" ? "bg-gray-700" : "") + " " + (message.role === "warning" ? "bg-orange-700" : "") + " relative"}>
+<div class={(message.role === "assistant" ? "bg-gray-700" : "") + " " + (message.role === "warning" ? "bg-orange-900" : "") + " relative"}>
     {#if memoryMarkerShown}
         <div class="absolute top-0 w-full flex flex-col items-center border-b-2 border-red-600 text-sm text-red-500 -translate-y-full">
             <h3>Memory</h3>
