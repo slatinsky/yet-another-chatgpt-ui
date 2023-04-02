@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ConversationModel } from "$ts/ConversationModel";
 	import { conversationsManager } from "$ts/ConversationsManager";
+	import { scrollDown } from "$ts/helpers";
 	import { ai } from "$ts/openai/ai";
 	import type { Writable } from "svelte/store";
 	import Message from "./Message.svelte";
@@ -67,7 +68,7 @@
 
 
         console.log("messages to api", messages);
-        const res = await ai.complete(messages);
+        const res = await ai.completeStream(messages);
         $selectedConversation.addMessage(res.message.content, res.message.role, res.totalTokens);
     }
 
@@ -116,13 +117,6 @@
                 event.preventDefault();
                 send();
             }
-        }
-    }
-
-    function scrollDown() {
-        const messages = document.querySelector("#messages-container");
-        if (messages) {
-            messages.scrollTop = messages.scrollHeight;
         }
     }
 </script>

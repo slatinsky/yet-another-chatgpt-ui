@@ -2,6 +2,8 @@ import { apiModel, apiToken } from "$ts/stores/settingsStores";
 import type { AIcomplete, AImessage } from "$ts/types";
 import { Configuration, OpenAIApi } from "openai";
 import { get } from "svelte/store";
+import { SSE } from "sse.js";
+import { temporaryMessageText } from "$ts/stores/conversationsStores";
 
 
 class AI {
@@ -21,54 +23,135 @@ class AI {
         this._tokenUnsubscribe();
     }
 
-    async complete(messages: AImessage[]): Promise<AIcomplete> {
-        const token = get(apiToken);
-        if (token === null) {
-            return {
-                message: {
-                    role: 'warning',
-                    content: "Token is not set. Please set it in Settings.",
+    async completeStream(messages: AImessage[]): Promise<AIcomplete> {
+        return new Promise((resolve, reject) => {
+            let stream = new SSE("https://api.openai.com/v1/chat/completions", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${get(apiToken)}`,
                 },
-                totalTokens: 0
-            }
-        }
+                method: "POST",
+                payload: JSON.stringify({
+                    model: get(apiModel),
+                    messages: messages,
+                    stream: true,
+                }),
+            });
 
-        try {
-            let completions = await this.api.createChatCompletion({
-                model: get(apiModel),
-                messages: messages,
-            })
-            let message = completions.data.choices[0].message;
-            let totalTokens = completions.data.usage?.total_tokens ?? 0;
-            console.log(completions);
+            temporaryMessageText.set("")  // streamedText
 
-            if (message === undefined) {
-                return {
-                    message: {
-                        role: 'warning',
-                        content: "No response from API",
-                    },
-                    totalTokens: 0
+            stream.addEventListener("message", (event) => {
+                if (event.data === "[DONE]") {  // stream is finished
+                    const response = {
+                        message: {
+                            role: 'assistant',
+                            content: get(temporaryMessageText),
+                        },
+                        totalTokens: 0
+                    }
+
+                    // clean up
+                    temporaryMessageText.set("")
+                    stream.close();
+
+                    resolve(response);
+                    return;
                 }
-            }
-            return {
-                message,
-                totalTokens
-            };
-        }
-        catch (error) {
-            console.log(error);
-            const msg = error?.response?.data?.error?.message ?? "Unknown error, see console for details";
 
-            return {
-                message: {
-                    role: 'warning',
-                    content: msg,
-                },
-                totalTokens: 0
-            }
-        }
+
+
+                const payload = JSON.parse(event.data);
+                const newText = payload.choices[0].delta.content;
+
+                if (newText === undefined) {  // "thinking"
+                    return;
+                }
+
+                temporaryMessageText.update((streamedText) => streamedText + newText);
+            });
+
+
+            stream.addEventListener("error", (event) => {
+                try {
+                    const payload = JSON.parse(event.data)
+
+                    const response = {
+                        message: {
+                            role: 'warning',
+                            content: payload.error.message,
+                        },
+                        totalTokens: 0
+                    }
+
+                    resolve(response);
+                }
+                catch (error) {
+                    const response = {
+                        message: {
+                            role: 'warning',
+                            content: "Unknown error, see console",
+                        },
+                        totalTokens: 0
+                    }
+                    console.log(event);
+                    console.log(error);
+                    resolve(response);
+                }
+            });
+
+            stream.stream();
+        });
     }
+
+    // not used now - makes request to API and waits for response instead of streaming
+    // async complete(messages: AImessage[]): Promise<AIcomplete> {
+    //     const token = get(apiToken);
+    //     if (token === null) {
+    //         return {
+    //             message: {
+    //                 role: 'warning',
+    //                 content: "Token is not set. Please set it in Settings.",
+    //             },
+    //             totalTokens: 0
+    //         }
+    //     }
+
+    //     try {
+    //         let completions = await this.api.createChatCompletion({
+    //             model: get(apiModel),
+    //             messages: messages,
+    //         })
+    //         let message = completions.data.choices[0].message;
+    //         let totalTokens = completions.data.usage?.total_tokens ?? 0;
+    //         console.log(completions);
+
+    //         if (message === undefined) {
+    //             return {
+    //                 message: {
+    //                     role: 'warning',
+    //                     content: "No response from API",
+    //                 },
+    //                 totalTokens: 0
+    //             }
+    //         }
+    //         return {
+    //             message,
+    //             totalTokens
+    //         };
+    //     }
+    //     catch (error) {
+    //         console.log(error);
+    //         const msg = error?.response?.data?.error?.message ?? "Unknown error, see console for details";
+
+    //         return {
+    //             message: {
+    //                 role: 'warning',
+    //                 content: msg,
+    //             },
+    //             totalTokens: 0
+    //         }
+    //     }
+    // }
 }
 
 

@@ -2,12 +2,15 @@
 	import Message from "./Message.svelte";
 	import { conversationsManager } from "$ts/ConversationsManager";
 	import type { Writable } from "svelte/store";
-	import { temporaryMessage, temporaryMessageTokens } from "$ts/stores/conversationsStores";
+	import { temporaryMessageText, temporaryMessageTokens } from "$ts/stores/conversationsStores";
+	import { scrollDown } from "$ts/helpers";
 
     const selectedConversation = conversationsManager.selectedConversation
     $: messages = $selectedConversation?.messages as Writable<Message[]> | undefined
 
     $: console.log("messages", messages);
+
+    $: $temporaryMessageText, scrollDown()  // scroll down when temporary message changes
 </script>
 
 <div class="bg-gray-800 flex-1 overflow-y-auto overflow-x-hidden" id="messages-container">
@@ -18,11 +21,11 @@
             <Message message={message}/>
             {/each}
 
-        {#if $temporaryMessage !== ""}
+        {#if $temporaryMessageText !== ""}
             <Message message={{
                 id: 99999999999,
                 role: "assistant" ,
-                content: $temporaryMessage,
+                content: $temporaryMessageText + "█",
                 timestamp: new Date().toISOString(),
                 totalTokens: $temporaryMessageTokens,
             }}/>
