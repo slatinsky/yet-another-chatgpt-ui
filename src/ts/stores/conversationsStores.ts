@@ -1,5 +1,6 @@
 import localforage from "localforage";
 import type { ConversationJson } from "../types";
+import { writable } from "svelte/store";
 
 export async function getConversationIds(): Promise<number[]> {
     let conversationsIds = await localforage.getItem("gptui-conversations-ids") as number[];
@@ -25,3 +26,7 @@ export async function saveConversation(conversation: ConversationJson) {
 export async function deleteConversationById(id: number) {
     await localforage.removeItem("gptui-conversation-" + id);
 }
+
+
+export const temporaryMessage = writable<string>("")
+export const temporaryMessageTokens = writable<number>(0)

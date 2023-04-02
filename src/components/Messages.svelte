@@ -2,6 +2,7 @@
 	import Message from "./Message.svelte";
 	import { conversationsManager } from "$ts/ConversationsManager";
 	import type { Writable } from "svelte/store";
+	import { temporaryMessage, temporaryMessageTokens } from "$ts/stores/conversationsStores";
 
     const selectedConversation = conversationsManager.selectedConversation
     $: messages = $selectedConversation?.messages as Writable<Message[]> | undefined
@@ -15,6 +16,16 @@
     {:else}
         {#each $messages as message}
             <Message message={message}/>
-        {/each}
+            {/each}
+
+        {#if $temporaryMessage !== ""}
+            <Message message={{
+                id: 99999999999,
+                role: "assistant" ,
+                content: $temporaryMessage,
+                timestamp: new Date().toISOString(),
+                totalTokens: $temporaryMessageTokens,
+            }}/>
+        {/if}
     {/if}
 </div>
