@@ -54,7 +54,7 @@
             return;
         }
 
-        const messages = []
+        let messages = []
 
         if ($systemMessage !== '') {
             messages.push({role: 'system', content: $systemMessage})
@@ -63,6 +63,12 @@
         for (const message of messagesInMemory) {
             messages.push({role: message.role, content: message.content})
         }
+
+        // remove messages that have different role than system/user/assistant
+        messages = messages.filter((message) => {
+            return message.role === "user" || message.role === "assistant" || message.role === "system";
+        });
+
 
         console.log("messages to api", messages);
         const res = await ai.complete(messages);

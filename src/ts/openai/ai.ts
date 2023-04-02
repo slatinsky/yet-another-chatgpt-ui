@@ -1,5 +1,6 @@
 import { apiModel, apiToken } from "$ts/stores";
 import type { AIcomplete, AImessage, Message } from "$ts/types";
+import { json } from "@sveltejs/kit";
 import { Configuration, OpenAIApi } from "openai";
 import { get } from "svelte/store";
 
@@ -22,17 +23,6 @@ class AI {
     }
 
     async complete(messages: AImessage[]): Promise<AIcomplete> {
-        // console.log("complete");
-        // console.log("messages", messages);
-        // console.log("systemMessage", systemMessage);
-        // return {
-        //     message: {
-        //         role: 'warning',
-        //         content: "DEV simulation",
-        //     },
-        //     totalTokens: 0
-        // }
-
         const token = get(apiToken);
         if (token === null) {
             return;
@@ -63,11 +53,12 @@ class AI {
         }
         catch (error) {
             console.log(error);
-            alert(error);
+            const msg = error?.response?.data?.error?.message ?? "Unknown error, see console for details";
+
             return {
                 message: {
                     role: 'warning',
-                    content: String(error),
+                    content: msg,
                 },
                 totalTokens: 0
             }
