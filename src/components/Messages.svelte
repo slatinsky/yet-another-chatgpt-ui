@@ -2,7 +2,7 @@
 	import Message from "./Message.svelte";
 	import { conversationsManager } from "$ts/ConversationsManager";
 	import type { Writable } from "svelte/store";
-	import { temporaryMessageText, temporaryMessageTokens } from "$ts/stores/conversationsStores";
+	import { temporaryMessageText } from "$ts/stores/conversationsStores";
 	import { scrollDown } from "$ts/helpers";
 
     const selectedConversation = conversationsManager.selectedConversation
@@ -27,7 +27,8 @@
                 role: "assistant" ,
                 content: $temporaryMessageText + "█",
                 timestamp: new Date().toISOString(),
-                totalTokens: $temporaryMessageTokens,
+                promptTokens: 0,
+                completionTokens: 0
             }}/>
         {/if}
     {/if}

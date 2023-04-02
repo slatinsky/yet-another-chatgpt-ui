@@ -12,7 +12,8 @@ export interface Message {
     role: "user" | "assistant" | "warning";
     content: string;
     timestamp: string;
-    totalTokens: number;
+    promptTokens: number;
+    completionTokens: number;
 }
 
 export interface AImessage {
@@ -22,5 +23,6 @@ export interface AImessage {
 
 export interface AIcomplete {
     message: AImessage;
-    totalTokens: number;
+    promptTokens: number;
+    completionTokens: number;
 }

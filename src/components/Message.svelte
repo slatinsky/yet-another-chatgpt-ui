@@ -68,8 +68,8 @@
             {@html md.render(message.content)}
         </div>
 
-        {#if message.totalTokens > 0}
-            <div class="px-4 pb-2 text-gray-500 text-xs text-end">USED {message.totalTokens} TOKENS</div>
+        {#if message.promptTokens + message.completionTokens > 0}
+            <div class="px-4 pb-2 text-gray-500 text-xs text-end">USED {message.promptTokens + message.completionTokens} TOKENS</div>
         {/if}
     {/if}
 </div>

@@ -64,7 +64,7 @@ export class ConversationModel {
         await saveConversation(conversationJson);
     }
 
-    addMessage(content: string, role: "user" | "assistant" | "warning", totalTokens: number): Message {
+    addMessage(content: string, role: "user" | "assistant" | "warning", promptTokens: number, completionTokens: number): Message {
         let timestamp = new Date().toISOString();
         let id = get(this.messages).reduce((maxId: number, message: Message) => {
             return Math.max(maxId, message.id);
@@ -74,7 +74,8 @@ export class ConversationModel {
             role: role,
             content: content,
             timestamp: timestamp,
-            totalTokens: totalTokens,
+            promptTokens: promptTokens,
+            completionTokens: completionTokens
         };
         this.messages.update((messages: Message[]) => [...messages, message]);
         return message;

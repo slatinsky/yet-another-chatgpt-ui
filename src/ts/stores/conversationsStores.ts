@@ -29,4 +29,3 @@ export async function deleteConversationById(id: number) {
 
 
 export const temporaryMessageText = writable<string>("")
-export const temporaryMessageTokens = writable<number>(0)  // not used

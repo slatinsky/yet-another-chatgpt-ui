@@ -22,7 +22,7 @@
             return null;
         }
         if (message) {
-            const newMessage = $selectedConversation.addMessage(message, "user", 0);
+            const newMessage = $selectedConversation.addMessage(message, "user", 0, 0);
             message = "";
 
             setTimeout(() => {
@@ -40,7 +40,7 @@
             return null;
         }
         if (message) {
-            const newMessage = $selectedConversation.addMessage(message, "assistant", 0);
+            const newMessage = $selectedConversation.addMessage(message, "assistant", 0, 0);
             message = "";
             return newMessage;
         }
@@ -69,7 +69,8 @@
 
         console.log("messages to api", messages);
         const res = await ai.completeStream(messages);
-        $selectedConversation.addMessage(res.message.content, res.message.role, res.totalTokens);
+        // const res = await ai.complete(messages);        // ALTERNATIVE
+        $selectedConversation.addMessage(res.message.content, res.message.role, res.promptTokens, res.completionTokens);
     }
 
     async function send() {
@@ -84,7 +85,6 @@
                 scrollDown()
             }, 0);
         }, 0);
-
     }
 
     async function sendWithoutHistory() {

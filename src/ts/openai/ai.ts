@@ -47,7 +47,8 @@ class AI {
                             role: 'assistant',
                             content: get(temporaryMessageText),
                         },
-                        totalTokens: 0
+                        promptTokens: 0,
+                        completionTokens: 0
                     }
 
                     // clean up
@@ -80,7 +81,8 @@ class AI {
                             role: 'warning',
                             content: payload.error.message,
                         },
-                        totalTokens: 0
+                        promptTokens: 0,
+                        completionTokens: 0
                     }
 
                     resolve(response);
@@ -91,7 +93,8 @@ class AI {
                             role: 'warning',
                             content: "Unknown error, see console",
                         },
-                        totalTokens: 0
+                        promptTokens: 0,
+                        completionTokens: 0
                     }
                     console.log(event);
                     console.log(error);
@@ -112,7 +115,8 @@ class AI {
     //                 role: 'warning',
     //                 content: "Token is not set. Please set it in Settings.",
     //             },
-    //             totalTokens: 0
+    //             promptTokens: 0,
+    //             completionTokens: 0
     //         }
     //     }
 
@@ -122,7 +126,8 @@ class AI {
     //             messages: messages,
     //         })
     //         let message = completions.data.choices[0].message;
-    //         let totalTokens = completions.data.usage?.total_tokens ?? 0;
+    //         let promptTokens = completions.data.usage?.prompt_tokens ?? 0;
+    //         let completionTokens = completions.data.usage?.completion_tokens ?? 0;
     //         console.log(completions);
 
     //         if (message === undefined) {
@@ -131,12 +136,14 @@ class AI {
     //                     role: 'warning',
     //                     content: "No response from API",
     //                 },
-    //                 totalTokens: 0
+    //                 promptTokens: 0,
+    //                 completionTokens: 0
     //             }
     //         }
     //         return {
     //             message,
-    //             totalTokens
+    //             promptTokens,
+    //             completionTokens
     //         };
     //     }
     //     catch (error) {
@@ -148,7 +155,8 @@ class AI {
     //                 role: 'warning',
     //                 content: msg,
     //             },
-    //             totalTokens: 0
+    //             promptTokens: 0,
+    //             completionTokens: 0
     //         }
     //     }
     // }
