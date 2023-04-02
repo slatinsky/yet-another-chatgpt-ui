@@ -1,7 +1,41 @@
 <script lang="ts">
-	import Sidebar from "./Sidebar.svelte";
+	import type { ConversationModel } from "$ts/ConversationModel";
+	import { conversationsManager } from "$ts/ConversationsManager";
 
+    export let conversation: ConversationModel;
+
+    const name = conversation.name;    // store
+    $: id = conversation.id;           // not a store
+    const role = conversation.role;    // store
+
+    $: selectedConversation = conversationsManager.selectedConversation;
+
+    function deleteConversation() {
+        conversationsManager.deleteConversation(id);
+    }
+
+    function renameConversation() {
+        const newName = prompt("Enter new name", $name);
+        if (newName) {
+            $name = newName;
+        }
+    }
+
+    function selectCoversation() {
+        conversationsManager.selectConversationById(id);
+    }
 </script>
-<div class="bg-slate-800 px-4 py-2 my-2 hover:bg-slate-700">
-    Hello
+
+<div>
+    <div class="bg-slate-800 px-4 py-2 mt-2 hover:bg-slate-700 flex justify-between" on:click={selectCoversation}>
+        <div>{$name}</div>
+        <div>
+            <button on:click|stopPropagation={renameConversation} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">rename</button>
+            <button on:click|stopPropagation={deleteConversation} class="text-sm bg-slate-600 hover:bg-slate-500 px-2 py-1">delete</button>
+        </div>
+    </div>
+
+    {#if $selectedConversation && $selectedConversation.id === id}
+        <textarea class="w-full bg-slate-700 px-2" name="" id="" rows="3" bind:value={$role} placeholder="Chat topic. Example: 'Ubuntu 22.04 CLI.'" />
+    {/if}
 </div>
