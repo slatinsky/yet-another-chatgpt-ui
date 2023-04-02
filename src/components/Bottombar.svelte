@@ -67,7 +67,7 @@
 
 
         console.log("messages to api", messages);
-        // const res = await ai.complete(messages);
+        const res = await ai.complete(messages);
         $selectedConversation.addMessage(res.message.content, res.message.role, res.totalTokens);
     }
 

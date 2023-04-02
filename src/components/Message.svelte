@@ -67,6 +67,10 @@
         <div class="px-4 pt-2 pb-8 text-gray-200 message-content">
             {@html md.render(message.content)}
         </div>
+
+        {#if message.totalTokens > 0}
+            <div class="px-4 pb-2 text-gray-500 text-xs text-end">USED {message.totalTokens} TOKENS</div>
+        {/if}
     {/if}
 </div>
 
