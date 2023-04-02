@@ -25,6 +25,12 @@
         $selectedConversation.deleteMessage(message.id);
     }
 
+
+    let showRaw = false;
+    function toggleRaw() {
+        showRaw = !showRaw;
+    }
+
     console.log("message.role", message.role);
 </script>
 
@@ -43,12 +49,16 @@
             <button on:click={setMemory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1 text-sm">Set memory</button>
         {/if}
         <button on:click={deleteMessage} class="bg-gray-600 hover:bg-gray-500 px-1 py-1 text-sm">Delete message</button>
-        <button class="bg-gray-600 hover:bg-gray-500 px-1 py-1 text-sm">Show raw</button>
+        <button on:click={toggleRaw} class="bg-gray-600 hover:bg-gray-500 px-1 py-1 text-sm">Show raw</button>
     </div>
 
-    <div class="px-4 pt-2 pb-8 text-gray-200">
-        {message.content}
-    </div>
+    {#if showRaw}
+        <pre class="px-4 pt-2 pb-8 text-gray-200">{message.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
+    {:else}
+        <div class="px-4 pt-2 pb-8 text-gray-200">
+            {message.content}
+        </div>
+    {/if}
 </div>
 
 
