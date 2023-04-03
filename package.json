@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-static": "^2.0.1",
 		"localforage": "^1.10.0",
 		"markdown-it": "^13.0.1",
 		"openai": "^3.2.1",

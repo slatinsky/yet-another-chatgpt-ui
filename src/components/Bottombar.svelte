@@ -124,8 +124,8 @@
 
 <div class="w-full flex text-white">
     <textarea on:keydown={keydown} class="w-full bg-gray-500 px-2" name="" id="" rows="3" placeholder="Type your message here. To insert new line, press shift+enter." bind:value={message} />
-    <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send [enter]</button>
-    <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history [ctrl+enter]</button>
+    <button on:click={send} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send <span class="text-xs text-gray-300">[enter]</span></button>
+    <button on:click={sendWithoutHistory} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Send without history <span class="text-xs text-gray-300">[ctrl+enter]</span></button>
     <!-- <button on:click={scrollDown} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Scroll down</button> -->
     <!-- <button on:click={simulateUser} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate user</button> -->
     <!-- <button on:click={simulateAssistant} class="bg-gray-600 hover:bg-gray-500 px-1 py-1">Simulate ChatGPT</button> -->
