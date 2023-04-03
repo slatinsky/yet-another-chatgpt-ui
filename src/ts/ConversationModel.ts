@@ -12,6 +12,7 @@ export class ConversationModel {
     private _unsubscribeName: any;
     private _unsubscribeMessages: any;
     private _unsubscribeSystemMessage: any;
+    private _unsubscribeMemoryId: any;
 
     constructor(id: number) {
         this.id = id;
@@ -45,6 +46,9 @@ export class ConversationModel {
                 await this.save();
             })
             this._unsubscribeSystemMessage = this.systemMessage.subscribe(async (role: string) => {
+                await this.save();
+            })
+            this._unsubscribeMemoryId = this.memoryId.subscribe(async (memoryId: number) => {
                 await this.save();
             })
         });
@@ -91,5 +95,6 @@ export class ConversationModel {
         this._unsubscribeName();
         this._unsubscribeMessages();
         this._unsubscribeSystemMessage();
+        this._unsubscribeMemoryId();
     }
 }

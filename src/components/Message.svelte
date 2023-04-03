@@ -7,7 +7,7 @@
 	import type { Message } from "$ts/types";
 	import { conversationsManager } from "$ts/ConversationsManager";
     const selectedConversation = conversationsManager.selectedConversation
-    const memoryId = $selectedConversation?.memoryId;
+    $: memoryId = $selectedConversation?.memoryId;
 
     // console.log("$selectedConversation", $selectedConversation);
 
