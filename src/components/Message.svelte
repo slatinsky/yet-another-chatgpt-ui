@@ -99,6 +99,21 @@
         white-space: pre-wrap;
     }
 
+    .message-content :global(ol) {
+        list-style-type: decimal;
+        padding-left: 2rem;
+    }
+
+    .message-content :global(ul) {
+        list-style-type: disc;
+        padding-left: 2rem;
+    }
+
+    .message-content :global(ol > li),
+    .message-content :global(ul > li) {
+        margin: 0.5rem 0;
+    }
+
     .message button {
         visibility: hidden;
     }
