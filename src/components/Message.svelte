@@ -103,6 +103,11 @@
         display: none;
     }
 
+    .message-content :global(ol .spacer),
+    .message-content :global(ul .spacer) {
+        height: 10px;
+    }
+
     .message-content :global(.spacer) {
         height: 25px;
     }
