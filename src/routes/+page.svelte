@@ -20,7 +20,9 @@
         <div class="flex-1 flex items-center justify-center text-white text-2xl">Select a topic</div>
     {:else}
         <div class="flex-1 flex flex-col">
-            <Messages />
+            {#key $selectedConversation}
+                <Messages />
+            {/key}
             <Bottombar />
         </div>
     {/if}

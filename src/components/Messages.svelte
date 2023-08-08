@@ -4,6 +4,7 @@
 	import type { Writable } from "svelte/store";
 	import { temporaryMessageText } from "$ts/stores/conversationsStores";
 	import { scrollDown } from "$ts/helpers";
+	import { onMount } from "svelte";
 
     const selectedConversation = conversationsManager.selectedConversation
     $: messages = $selectedConversation?.messages as Writable<Message[]> | undefined
@@ -11,6 +12,10 @@
     $: console.log("messages", messages);
 
     $: $temporaryMessageText, scrollDown()  // scroll down when temporary message changes
+
+    onMount(() => {
+        scrollDown();
+    })
 </script>
 
 <div class="bg-gray-800 flex-1 overflow-y-auto overflow-x-hidden" id="messages-container">
