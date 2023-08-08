@@ -42,10 +42,6 @@
     function toggleRaw() {
         showRaw = !showRaw;
     }
-    
-
-    $: console.log("message", message.content.replaceAll("\n\n", "\n\n<div class=spacer ></div>\n\n"));
-    
 </script>
 
 
@@ -84,7 +80,7 @@
         <pre class="px-4 pt-2 pb-8 text-gray-200 whitespace-pre-wrap">{message.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
     {:else}
         <div class="px-4 pt-2 pb-8 text-gray-200 message-content">
-            {@html md.render(message.content.replaceAll("\r", "").replaceAll("\n\n", "\n\nMESSSSSAGEMARRRKEKEEKER\n\n")).replaceAll("MESSSSSAGEMARRRKEKEEKER", "<div class=spacer ></div>")}
+            {@html md.render(message.content.replaceAll("\r", "").replaceAll("\n\n", "\nMESSSSSAGEMARRRKEKEEKER\n")).replaceAll("MESSSSSAGEMARRRKEKEEKER", "<div class=spacer ></div>")}
         </div>
 
         {#if message.promptTokens + message.completionTokens > 0}
@@ -101,6 +97,10 @@
         padding: 1rem;
         margin: 1rem 0;
         white-space: pre-wrap;
+    }
+
+    .message-content :global(pre .spacer) {
+        display: none;
     }
 
     .message-content :global(.spacer) {
