@@ -4,13 +4,33 @@
     import Sidebar from "$components/Sidebar.svelte";
 	import { conversationsManager } from "$ts/ConversationsManager";
 	import { apiToken } from "$ts/stores/settingsStores";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
 
     let conversations = conversationsManager.conversations;
 
     const selectedConversation = conversationsManager.selectedConversation  // store
 
+    let pageTitle = "YACGPTUI"
+    function selectedConversationChanged(selectConv) {
+        pageTitle = get(selectConv.name);
+    }
+    $: selectedConversationChanged($selectedConversation)
+
+    onMount(() => {
+        $selectedConversation.name.subscribe((newName) => {
+            pageTitle = newName;
+            console.log("new name", newName);
+        })
+    })
     apiToken
 </script>
+
+<!-- title -->
+
+<svelte:head>
+    <title>{pageTitle}</title>
+</svelte:head>
 
 <div class="flex h-full">
     <Sidebar />
