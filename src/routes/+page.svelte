@@ -13,15 +13,22 @@
 
     let pageTitle = "YACGPTUI"
     function selectedConversationChanged(selectConv) {
-        pageTitle = get(selectConv.name);
+        if (selectConv) {
+            pageTitle = get(selectConv.name);
+        }
+        else {
+            pageTitle = "YACGPTUI"
+        }
     }
     $: selectedConversationChanged($selectedConversation)
 
     onMount(() => {
-        $selectedConversation.name.subscribe((newName) => {
-            pageTitle = newName;
-            console.log("new name", newName);
-        })
+        if ($selectedConversation) {
+            $selectedConversation.name.subscribe((newName) => {
+                pageTitle = newName;
+                console.log("new name", newName);
+            })
+        }
     })
     apiToken
 </script>
