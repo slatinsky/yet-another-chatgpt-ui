@@ -61,30 +61,24 @@ class AI {
 
                 
                 // sometimes multiple json responses are sent in one message. Split them and parse each one as json
-                // to split them, count the number of open and close curly braces
-                // ignore escaped curly braces
+                // to split them, try to parse json each time a '}' is encountered
                 const str = event.data
-                let open = 0;
-                let close = 0;
-                let payloads = [];
-                let start = 0;
+                let responses = []
+                let response = ''
                 for (let i = 0; i < str.length; i++) {
-                    if (str[i] === '{' && str[i-1] !== '\\') {
-                        open++;
-                    } else if (str[i] === '}' && str[i-1] !== '\\') {
-                        close++;
-                    }
-                    if (open === close) {
-                        payloads.push(str.slice(start, i+1));
-                        start = i+1;
-                        open = 0;
-                        close = 0;
+                    response += str[i]
+                    if (str[i] === '}') {
+                        try {
+                            responses.push(JSON.parse(response))
+                            response = ''
+                        } catch (e) {
+                            // console.log(e)
+                        }
                     }
                 }
-
-                for (let payload of payloads) {
-                    const parsed = JSON.parse(payload);
-                    const newText = parsed.choices[0].delta.content;
+                console.log(responses);
+                for (let response of responses) {
+                    const newText = response.choices[0].delta.content;
                     if (newText === undefined) {  // "thinking"
                         continue;
                     }
