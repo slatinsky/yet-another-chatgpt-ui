@@ -1,21 +1,20 @@
 import { apiModel, apiToken } from "$ts/stores/settingsStores";
 import type { AIcomplete, AImessage } from "$ts/types";
-import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "openai";
 import { get } from "svelte/store";
 import { SSE } from "sse.js";
 import { temporaryMessageText } from "$ts/stores/conversationsStores";
 
 
 class AI {
-    private api: OpenAIApi;
+    private api: OpenAI;
     private _tokenUnsubscribe: () => void;
     constructor() {
         this._tokenUnsubscribe = apiToken.subscribe((token) => {
-            const config: Configuration = new Configuration({
+            this.api = new OpenAI({
                 apiKey: token,
+                dangerouslyAllowBrowser: true,
             });
-
-            this.api = new OpenAIApi(config);
         });
     }
 

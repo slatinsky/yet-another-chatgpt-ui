@@ -1,24 +1,35 @@
 import { writable } from "svelte/store";
 import localforage from "localforage";
+import { browser } from "$app/environment";
 
-async function persistentWritable<T>(key: string, initialValue: any) {
+let loadedCount = 0;
+
+// TODO: refactor quick fix to svelte 5 runes
+function persistentWritable<T>(key: string, initialValue: any) {
     const store = writable<T>(initialValue);
 
-    const json = await localforage.getItem(key);
-    console.log("json", json);
-    if (json !== null) {
-        store.set(json as T);
+    if (browser) {
+        localforage.getItem(key, (err, value) => {
+            if (err) {
+                console.error(err);
+            }
+            store.set(value);
+            loadedCount++;
+            if (loadedCount === 3) {
+                storesAreLoading.set(false);
+            }
+        })
+
+        store.subscribe(async (value) => {
+            await localforage.setItem(key, value);
+        });
     }
-
-    store.subscribe(async (value) => {
-        await localforage.setItem(key, value);
-    });
-
     return store;
 }
+export let storesAreLoading = writable(true);
 
-const apiToken = await persistentWritable<string>("gptui-apitoken", "");
-const apiModel = await persistentWritable<string>("gptui-apimodel", "gpt-3.5-turbo");
-const showBranding = await persistentWritable<boolean>("gptui-showbranding", true);
+let apiToken = persistentWritable<string>("gptui-apitoken", "");
+let apiModel = persistentWritable<string>("gptui-apimodel", "gpt-3.5-turbo");
+let showBranding = persistentWritable<boolean>("gptui-showbranding", true);
 
 export { apiToken, apiModel, showBranding };

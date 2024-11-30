@@ -30,7 +30,6 @@
             })
         }
     })
-    apiToken
 </script>
 
 <!-- title -->
