@@ -59,15 +59,30 @@ class AI {
                 }
 
 
-
-                const payload = JSON.parse(event.data);
-                const newText = payload.choices[0].delta.content;
-
-                if (newText === undefined) {  // "thinking"
-                    return;
+                // sometimes multiple json responses are sent in one message. Split them and parse each one as json
+                // to split them, try to parse json each time a '}' is encountered
+                const str = event.data
+                let responses = []
+                let response = ''
+                for (let i = 0; i < str.length; i++) {
+                    response += str[i]
+                    if (str[i] === '}') {
+                        try {
+                            responses.push(JSON.parse(response))
+                            response = ''
+                        } catch (e) {
+                            // console.log(e)
+                        }
+                    }
                 }
-
-                temporaryMessageText.update((streamedText) => streamedText + newText);
+                console.log(responses);
+                for (let response of responses) {
+                    const newText = response.choices[0].delta.content;
+                    if (newText === undefined) {  // "thinking"
+                        continue;
+                    }
+                    temporaryMessageText.update((streamedText) => streamedText + newText);
+                }
             });
 
 
