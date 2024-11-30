@@ -1,15 +1,11 @@
-FROM node:16-alpine
-
-WORKDIR /usr/app
-
+FROM node:20.18.0-alpine as build
+WORKDIR /app
 COPY package*.json ./
-RUN npm install --legacy-peer-deps && \
-    npm cache clean --force && \
-    rm -rf /root/.npm /root/.node-gyp && \
-    rm -rf /usr/src/app/package-lock.json
-
+RUN npm ci
 COPY . .
+RUN npm run build
 
-EXPOSE 8156
-
-CMD ["npm", "run", "dev", "--", "--host"]
+FROM nginx:1-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx/spa.conf /etc/nginx/conf.d/default.conf
+CMD ["nginx", "-g", "daemon off;"]
